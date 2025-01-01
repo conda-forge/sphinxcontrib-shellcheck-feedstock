@@ -5,34 +5,37 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/s/sphinxcontrib-shellcheck/sphinxcontrib-shellcheck-{{ version }}.zip
+  url: https://pypi.org/packages/source/s/sphinxcontrib-shellcheck/sphinxcontrib-shellcheck-{{ version }}.zip
   sha256: 475a3ae12a1cfc1bc26cff57f0dd15561213818e3b470b3eacc4bb8be7b129c0
 
 build:
+  number: 1
   noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
-  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
 
 requirements:
   host:
     - pip
-    - python >=3.6
+    - python {{ python_min }}
+    - setuptools
   run:
     - decorator
     - docutils
-    - python >=3.6
+    - python >={{ python_min }}
     - six
     - sphinx
     # from _check_version in sphinxcontrib/shellcheck.py
     - shellcheck >=0.4.4
 
 test:
+  requires:
+    - pip
+    - python {{ python_min }}
   imports:
     - sphinxcontrib.shellcheck
   commands:
     - pip check
-  requires:
-    - pip
 
 about:
   home: https://github.com/pmacosta/sphinxcontrib-shellcheck
